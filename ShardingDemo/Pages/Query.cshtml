@@ -1,0 +1,15 @@
+﻿@page
+@model ShardingDemo.Pages.QueryModel
+@{
+    ViewData["Title"] = "Query";
+}
+    <table class="table-active">
+        <tr><td>Id</td><td>name</td><td>database</td></tr>
+        @foreach (var v in Model.data)
+        {
+           
+            <tr><td>@v[0]</td><td>@v[1]</td><td>@v[3]</td></tr>
+        }
+    </table>
+<h1>Query</h1>
+
