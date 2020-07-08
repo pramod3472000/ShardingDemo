@@ -28,7 +28,7 @@ namespace ShardingDemo.Pages
         }
         private List<string[]> MultiShardQuery()
         {
-            ListShardMap<int> shardMap = objShard.TryGetShardMap();
+         //   ListShardMap<int> shardMap = objShard.TryGetShardMap();
             if (shardMap != null)
             {
             return     objShard.ExecuteMultiShardQuery(
