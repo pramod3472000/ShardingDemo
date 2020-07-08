@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vulnerabilityAssessments_Default_storageContainerPath": {
+      "value": "vulnerabilityAssessments_Default_storageContainerPath"
+    },
+    "servers_pramodserver1_name": {
+      "value": "pramodserver1"
+    },
+    "sites_shardingtesting_name": {
+      "value": "testshardingname"
+    },
+    "serverfarms_ASP_resorcetest_8806_name": {
+      "value": "serverfarmaspname"
+    },
+    "actionGroups_Application_Insights_Smart_Detection_name": {
+      "value": "actionGroups_Application_Insights_Smart_Detection_name"
+    },
+    "smartdetectoralertrules_failure_anomalies___shardingtesting_name": {
+      "value": "smartdetectoralertrules_failure_anomalies___shardingtesting_name"
+    },
+    "components_shardingtesting_externalid": {
+      "value": "components_shardingtesting_externalid1"
+    }
+  }
+}

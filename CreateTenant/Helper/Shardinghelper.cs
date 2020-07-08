@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.SqlDatabase.ElasticScale.Query;
 using Microsoft.Azure.SqlDatabase.ElasticScale.ShardManagement;
-using MigraDoc.DocumentObjectModel.Tables;
+using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,6 +14,15 @@ namespace ShardingDemo.Helper
     public class Shardinghelper
     {
         private  ShardMapManager s_shardMapManager;
+        public const string MasterDatabaseName = "master";
+        /// Script file that will be executed to initialize a shard.
+        /// </summary>
+        private const string InitializeShardScriptFile = "InitializeShard.sql";
+
+        /// <summary>
+        /// Format to use for creating shard name. {0} is the number of shards that have already been created.
+        /// </summary>
+        private const string ShardNameFormat = "ElasticScaleStarterKit_Shard{0}";
         public Shardinghelper()
         {
 
@@ -26,7 +35,7 @@ namespace ShardingDemo.Helper
                 string shardMapManagerConnectionString =
                  Configuration.GetConnectionString(
                      Configuration.ShardMapManagerServerName,
-                     Configuration.ShardMapManagerDatabaseName);
+                     "ElasticScaleStarterKit_ShardMapManagerDb");
 
                 s_shardMapManager = this.CreateOrGetShardMapManager(shardMapManagerConnectionString);
             }
@@ -243,6 +252,113 @@ namespace ShardingDemo.Helper
 
             return shardMapManager;
         }
-       
+        public void AddShard(int customerid)
+        {
+            ListShardMap<int> shardMap = TryGetShardMap();
+            if (shardMap != null)
+            {
+                // Here we assume that the ranges start at 0, are contiguous, 
+                // and are bounded (i.e. there is no range where HighIsMax == true)
+                //int currentMaxHighKey = shardMap.GetMappings().Max(m => m.Value.High);
+                //int defaultNewHighKey = currentMaxHighKey + 100;
+
+                //Console.WriteLine("A new range with low key {0} will be mapped to the new shard.", currentMaxHighKey);
+                //int newHighKey = ConsoleUtils.ReadIntegerInput(
+                //    string.Format("Enter the high key for the new range [default {0}]: ", defaultNewHighKey),
+                //    defaultNewHighKey,
+                //    input => input > currentMaxHighKey);
+
+                //Range<int> range = new Range<int>(currentMaxHighKey, newHighKey);
+
+                //Console.WriteLine();
+                //Console.WriteLine("Creating shard for range {0}", range);
+
+                CreateShard(shardMap, customerid);
+            }
+        }
+        public  void CreateShard(ListShardMap<int> shardMap, int id)
+        {
+            // Create a new shard, or get an existing empty shard (if a previous create partially succeeded).
+            Shard shard = CreateOrGetEmptyShard(shardMap);
+
+            // Create a mapping to that shard.
+            var r = shardMap.CreatePointMapping(id, shard);
+            // ConsoleUtils.WriteInfo("Mapped range {0} to shard {1}", mappingForNewShard.Value, shard.Location.Database);
+        }
+        private  Shard CreateOrGetEmptyShard(ListShardMap<int> shardMap)
+        {
+            // Get an empty shard if one already exists, otherwise create a new one
+            Shard shard = FindEmptyShard(shardMap);
+            if (shard == null)
+            {
+                // No empty shard exists, so create one
+
+                // Choose the shard name
+                string databaseName = string.Format(ShardNameFormat, shardMap.GetShards().Count());
+
+                try
+                {
+                    SqlDatabaseUtils objs = new SqlDatabaseUtils();
+                    // Only create the database if it doesn't already exist. It might already exist if
+                    // we tried to create it previously but hit a transient fault.
+                    if (!objs.DatabaseExists(Configuration.ShardMapManagerServerName, databaseName))
+                    {
+                        objs.CreateDatabase(Configuration.ShardMapManagerServerName, databaseName);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+                // Create schema and populate reference data on that database
+                // The initialize script must be idempotent, in case it was already run on this database
+                // and we failed to add it to the shard map previously
+                SqlDatabaseUtils.ExecuteSqlScript(
+                    Configuration.ShardMapManagerServerName, databaseName, InitializeShardScriptFile);
+
+                // Add it to the shard map
+                ShardLocation shardLocation = new ShardLocation(Configuration.ShardMapManagerServerName, databaseName);
+                shard = CreateOrGetShard(shardMap, shardLocation);
+            }
+
+            return shard;
+        }
+        private  Shard FindEmptyShard(ListShardMap<int> shardMap)
+        {
+            // Get all shards in the shard map
+            IEnumerable<Shard> allShards = shardMap.GetShards();
+
+            // Get all mappings in the shard map
+            IEnumerable<PointMapping<int>> allMappings = shardMap.GetMappings();
+
+            // Determine which shards have mappings
+            HashSet<Shard> shardsWithMappings = new HashSet<Shard>(allMappings.Select(m => m.Shard));
+
+            // Get the first shard (ordered by name) that has no mappings, if it exists
+            return allShards.OrderBy(s => s.Location.Database).FirstOrDefault(s => !shardsWithMappings.Contains(s));
+        }
+        public  Shard CreateOrGetShard(ShardMap shardMap, ShardLocation shardLocation)
+        {
+            // Try to get a reference to the Shard
+            Shard shard;
+            bool shardExists = shardMap.TryGetShard(shardLocation, out shard);
+
+            if (shardExists)
+            {
+                //ConsoleUtils.WriteInfo("Shard {0} has already been added to the Shard Map", shardLocation.Database);
+            }
+            else
+            {
+                // The Shard Map does not exist, so create it
+                shard = shardMap.CreateShard(shardLocation);
+                //ConsoleUtils.WriteInfo("Added shard {0} to the Shard Map", shardLocation.Database);
+            }
+
+            return shard;
+        }
+      
+        
+
     }
 }
