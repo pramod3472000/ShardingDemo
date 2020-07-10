@@ -15,7 +15,11 @@ namespace ShardingDemo.Helper
         {
             get { return "pramodserver1.database.windows.net"; }
         }
+        public static  string containerName = "appfile347";
 
+       
+
+        public static string StorageConnection = "DefaultEndpointsProtocol=https;AccountName=store347;AccountKey=nY70DtDGJJALQBboupuCrf7yKq7ueLp+MB4cYSTkK4ColeYYhrWueEvxw9Jj/jzWd1n3YJTSJuWTqW2tX4Q57g==;EndpointSuffix=core.windows.net";
         /// <summary>
         /// Gets the database name for the Shard Map Manager database, which contains the shard maps.
         /// </summary>

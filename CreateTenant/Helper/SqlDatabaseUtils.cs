@@ -1,4 +1,9 @@
-﻿using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Microsoft.Azure;
+using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +11,7 @@ using System.Data.SqlClient;
 using System.IO;
 
 using System.Text;
-
+using System.Threading.Tasks;
 
 namespace ShardingDemo.Helper
 {
@@ -199,26 +204,64 @@ namespace ShardingDemo.Helper
 
         private static IEnumerable<string> ReadSqlScript(string scriptFile)
         {
+            var downloadfile = GetFileStream();
+
+            var download = downloadfile.Download().Value; ;
+
+           
+            //using (MemoryStream downloadFileStream = new MemoryStream())
+            //{
+            //     download.Content.CopyTo(downloadFileStream);
+            //   // downloadFileStream.Close();
+            //    return downloadFileStream;
+            //}
             List<string> commands = new List<string>();
-            using (TextReader tr = new StreamReader(scriptFile))
+            using (MemoryStream downloadFileStream = new MemoryStream())
             {
-                StringBuilder sb = new StringBuilder();
-                string line;
-                while ((line = tr.ReadLine()) != null)
+                
+                download.Content.CopyTo(downloadFileStream);
+                downloadFileStream.Position = 0;
+                using (StreamReader tr = new StreamReader(downloadFileStream, true))
+
                 {
-                    if (line == "GO")
+                    StringBuilder sb = new StringBuilder();
+                    string line;
+                    while ((line = tr.ReadLine()) != null)
                     {
-                        commands.Add(sb.ToString());
-                        sb.Clear();
-                    }
-                    else
-                    {
-                        sb.AppendLine(line);
+                        if (line == "GO")
+                        {
+                            commands.Add(sb.ToString());
+                            sb.Clear();
+                        }
+                        else
+                        {
+                            sb.AppendLine(line);
+                        }
                     }
                 }
             }
 
             return commands;
+        }
+
+        public  static BlobClient GetFileStream()
+        {
+
+
+            // Create a BlobServiceClient object which will be used to create a container client
+            BlobServiceClient blobServiceClient = new BlobServiceClient(Configuration.StorageConnection);
+
+           
+
+            // Create the container and return a container client object
+            BlobContainerClient containerClient =  blobServiceClient.GetBlobContainerClient(Configuration.containerName);
+          var downloadfile=  containerClient.GetBlobClient("InitializeShard.sql");
+            return downloadfile;
+
+         
+
+
+
         }
 
         /// <summary>

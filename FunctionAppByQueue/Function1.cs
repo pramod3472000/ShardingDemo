@@ -1,10 +1,11 @@
 using System;
+using System.IO;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage.Blob.Protocol;
 using Newtonsoft.Json;
-
+using ShardingDemo.Helper;
 
 namespace FunctionAppByQueue
 {
@@ -16,9 +17,12 @@ namespace FunctionAppByQueue
             log.LogInformation($"C# Queue trigger function processed: {myQueueItem}");
             dynamic json = JsonConvert.DeserializeObject<Sample>(myQueueItem);
             int id;
+
+
+
             Int32.TryParse(json.id, out id);
-            //Shardinghelper obj = new Shardinghelper();
-            //obj.AddShard(id);
+            Shardinghelper obj = new Shardinghelper();
+            obj.AddShard(id);
         }
         
     }
