@@ -32,9 +32,9 @@ namespace ShardingDemo.Pages
             ListShardMap<int> shardMap = objShard.TryGetShardMap();
             if (shardMap != null)
             {
-            return     objShard.ExecuteMultiShardQuery(
-                    shardMap,
-                    Configuration.GetCredentialsConnectionString());
+                return objShard.ExecuteMultiShardQuery(
+                        shardMap,
+                        Configuration.GetCredentialsConnectionString());
             }
             else
             {
