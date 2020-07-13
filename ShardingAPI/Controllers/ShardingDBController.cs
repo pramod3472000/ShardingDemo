@@ -28,14 +28,11 @@ namespace ShardingAPI.Controllers
         [HttpGet]
         public IEnumerable<string[]> Get()
         {
+            //List<string[]> abc = new List<string[]>();
+            //abc.Add(new string[] { "a", "b", "c" });
+            //abc.Add(new string[] { "x", "y", "z" });
+            //return abc;
             return shardingDBService.GetShardDB();
-        }
-
-        // GET api/<AllDBController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
         }
 
         // POST api/<AllDBController>
@@ -56,8 +53,8 @@ namespace ShardingAPI.Controllers
         /// </summary>
         /// <param name="queueMessage">the queueMessage to write</param>
         /// <returns></returns>
-        [HttpPost]
-        public async Task<IActionResult> CreateOrder(QueueMessage queueMessage)
+        [HttpPost("AddQueueMessage")]
+        public async Task<IActionResult> AddQueueMessage(QueueMessage queueMessage)
         {
             await shardingQueueService.SendMessageAsync<QueueMessage>(queueMessage);
 
@@ -65,16 +62,6 @@ namespace ShardingAPI.Controllers
 
         }
 
-        // PUT api/<AllDBController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<AllDBController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+       
     }
 }

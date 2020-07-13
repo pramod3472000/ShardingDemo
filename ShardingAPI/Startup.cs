@@ -27,14 +27,16 @@ namespace ShardingAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<IShardingQueueService, ShardingQueueService>();
-            services.AddScoped<IShardingDBService, ShardingDBService>();
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen();
+
+            services.AddTransient<IShardingQueueService, ShardingQueueService>();
+            services.AddTransient<IShardingDBService, ShardingDBService>();
 
             //We need a singleton for ShardingHelper. Probably because we need to maintain DB Connections
             services.AddSingleton<Shardinghelper>();
 
-            // Register the Swagger generator, defining 1 or more Swagger documents
-            services.AddSwaggerGen();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,12 +56,12 @@ namespace ShardingAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+            //else
+            //{
+            //    app.UseExceptionHandler("/Error");
+            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts();
+            //}
 
             //app.UseHttpsRedirection();
             //app.UseStaticFiles();
@@ -70,7 +72,7 @@ namespace ShardingAPI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
