@@ -22,10 +22,10 @@ namespace ShardingDemo.Pages
             objShard = _objShard;
         }
 
-        public void OnGet( int CustId)
+        public void OnGet(int CustId)
         {
             ListShardMap<int> shardMap = objShard.TryGetShardMap();
-            if(CustId==0)
+            if (CustId == 0)
             {
                 CustId = 1;
             }
@@ -36,7 +36,7 @@ namespace ShardingDemo.Pages
                     Configuration.GetCredentialsConnectionString(), CustId);
             }
         }
-        private  void MultiShardQuery()
+        private void MultiShardQuery()
         {
             ListShardMap<int> shardMap = objShard.TryGetShardMap();
             if (shardMap != null)
