@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CreateTenant", "CreateTenan
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ByBlob", "ByBlob\ByBlob.csproj", "{92ECC1E6-F438-4677-963A-23565887DB10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionAppByQueue", "FunctionAppByQueue\FunctionAppByQueue.csproj", "{7AC1F661-1D17-4EC7-AC8F-4BA15A756122}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionAppByQueue", "FunctionAppByQueue\FunctionAppByQueue.csproj", "{7AC1F661-1D17-4EC7-AC8F-4BA15A756122}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceBusFunction", "ServiceBusFunction\ServiceBusFunction.csproj", "{BC244AD3-F066-459F-B1B7-4ACB77C31316}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{7AC1F661-1D17-4EC7-AC8F-4BA15A756122}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7AC1F661-1D17-4EC7-AC8F-4BA15A756122}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7AC1F661-1D17-4EC7-AC8F-4BA15A756122}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC244AD3-F066-459F-B1B7-4ACB77C31316}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC244AD3-F066-459F-B1B7-4ACB77C31316}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC244AD3-F066-459F-B1B7-4ACB77C31316}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC244AD3-F066-459F-B1B7-4ACB77C31316}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "components_FunctionAppByQueue20200710174900_WorkspaceResourceId": {
+            "value": null
+        },
+        "vulnerabilityAssessments_Default_storageContainerPath": {
+            "value": null
+        },
+        "servers_pramodserver1_name": {
+            "value": null
+        },
+        "storageAccounts_store347_name": {
+            "value": null
+        },
+        "serverfarms_SouthCentralUSPlan_name": {
+            "value": null
+        },
+        "sites_FunctionAppByQueue20200710174900_name": {
+            "value": null
+        },
+        "components_FunctionAppByQueue20200710174900_name": {
+            "value": null
+        },
+        "actionGroups_Application_Insights_Smart_Detection_name": {
+            "value": null
+        },
+        "smartdetectoralertrules_failure_anomalies___functionappbyqueue20200710174900_name": {
+            "value": null
+        }
+    }
+}
