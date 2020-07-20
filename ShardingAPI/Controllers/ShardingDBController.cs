@@ -28,11 +28,11 @@ namespace ShardingAPI.Controllers
         [HttpGet]
         public IEnumerable<string[]> Get()
         {
-            //List<string[]> abc = new List<string[]>();
-            //abc.Add(new string[] { "a", "b", "c" });
-            //abc.Add(new string[] { "x", "y", "z" });
-            //return abc;
-            return shardingDBService.GetShardDB();
+            List<string[]> abc = new List<string[]>();
+            abc.Add(new string[] { "a", "b", "c" });
+            abc.Add(new string[] { "x", "y", "z" });
+            return abc;
+            //return shardingDBService.GetShardDB();
         }
 
         // POST api/<AllDBController>

@@ -16,6 +16,8 @@ namespace ShardingAPI
 {
     public class Startup
     {
+        //- Services__Products=http://nameofotherapi_as_shardingapi_inaboveexample
+        //The above needs to be added in the docker-compose.override.yml if our main api is calling other APIs
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
