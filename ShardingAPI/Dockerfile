@@ -4,11 +4,11 @@
 #For more information, please see https://aka.ms/containercompat
 
 #Default is 1903, we are changing it to 1803 to make it work on Azure. To make it work on local, change it back to 1903
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-nanoserver-1803 AS base
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-nanoserver-1903 AS base
 WORKDIR /app
 EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-nanoserver-1803 AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-nanoserver-1903 AS build
 WORKDIR /src
 COPY ["ShardingAPI/ShardingAPI.csproj", "ShardingAPI/"]
 RUN dotnet restore "ShardingAPI/ShardingAPI.csproj"
