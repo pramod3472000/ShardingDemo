@@ -11,7 +11,11 @@ using AzureSearchDemo.Models;
 
 namespace AzureSearchDemo.Services
 {
-    public class AzureSearchService
+    public interface IAzureSearchService
+    {
+        void InitializeAndCreateIndex();
+    }
+    public class AzureSearchService : IAzureSearchService
     {
         string searchServiceName =
             ConfigurationManager.AppSettings["AzureSearchName"];
@@ -21,6 +25,12 @@ namespace AzureSearchDemo.Services
         string indexName = "accounts";
 
         public AzureSearchService()
+        {
+
+            
+        }
+
+        public void InitializeAndCreateIndex()
         {
 
             SearchServiceClient serviceClient =

@@ -6,3 +6,10 @@ services:
     build:
       context: .
       dockerfile: ShardingAPI\Dockerfile
+
+  azuresearchdemo:
+    image: ${DOCKER_REGISTRY-}azuresearchdemo
+    build:
+      context: .
+      dockerfile: AzureSearchDemo\Dockerfile
+

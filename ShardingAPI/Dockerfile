@@ -3,7 +3,7 @@
 #Depending on the operating system of the host machines(s) that will build or run the containers, the image specified in the FROM statement may need to be changed.
 #For more information, please see https://aka.ms/containercompat
 
-#Default is 1903, we are changing it to 1803 to make it work on Azure. To make it work on local, change it back to 1903
+#Default is 1903, we are changing it to 1809 to make it work on Azure. To make it work on local, change it back to 1903
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-nanoserver-1809 AS base
 WORKDIR /app
 EXPOSE 80

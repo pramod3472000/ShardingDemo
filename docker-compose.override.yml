@@ -8,3 +8,10 @@ services:
       #The above needs to be added in the docker-compose.override.yml if our main api is calling other APIs
     ports:
       - "1234:80"
+
+  azuresearchdemo:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "4567:80"
+
