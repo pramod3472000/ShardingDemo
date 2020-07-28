@@ -36,6 +36,8 @@ namespace AzureSearchDemo
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
+                //.Enrich.FromLogContext()
+                .Enrich.WithProperty("Version", typeof(Program).Assembly.ImageRuntimeVersion)
                 .CreateLogger();
 
             Log.Logger.Information("Logging my first message from Serilog");
