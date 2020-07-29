@@ -5,9 +5,11 @@
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
     <UserSecretsId>295fe70a-7a40-46d0-afb5-625d0a6fd746</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/a49f1f1e-ec70-47b8-b06e-26683bed6aab/resourceGroups/AzureAppServiceRG/providers/microsoft.insights/components/AppInsightsCommon</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.13.1" />
     <PackageReference Include="Microsoft.Azure.Search" Version="10.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.6" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.9" />

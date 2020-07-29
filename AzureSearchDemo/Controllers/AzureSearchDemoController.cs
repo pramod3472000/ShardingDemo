@@ -28,7 +28,7 @@ namespace AzureSearchDemo.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            _logger.Information("Inside Controller Get method");
+            _logger.Information("Inside Controller Get method - Logging Information");
             //_azureSearchService.InitializeAndCreateIndex();
             return new string[] { "value1", "value2" };
         }

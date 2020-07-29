@@ -32,18 +32,28 @@ namespace AzureSearchDemo
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen();
 
-            //var config = builder.Build();
-
+                        
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 //.Enrich.FromLogContext()
                 .Enrich.WithProperty("Version", typeof(Program).Assembly.ImageRuntimeVersion)
                 .CreateLogger();
 
+            try
+            {
+                throw new Exception("Trying to throw an error deliberately");
+            }
+            catch (Exception ex)
+            {
+
+                Log.Logger.Error(ex, "Trying to log my first error message on azure app insights");
+            }
+            
             Log.Logger.Information("Logging my first message from Serilog");
 
             services.AddSingleton(Log.Logger);
             services.AddTransient<IAzureSearchService, AzureSearchService>();
+            //services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
