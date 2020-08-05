@@ -29,7 +29,7 @@ namespace AzureSearchDemo
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 //.UseSerilog()
-                .UseSerilog(Log.Logger)
+                .UseSerilog(Log.Logger, true)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AzureSearchDemo.Helpers;
 using AzureSearchDemo.Services;
 using Microsoft.AspNetCore.Mvc;
 //using Microsoft.Extensions.Logging;
@@ -17,11 +18,13 @@ namespace AzureSearchDemo.Controllers
     {
         private readonly ILogger _logger;
         private readonly IAzureSearchService _azureSearchService;
+        private readonly ICustomConfigurationSettings _CustomConfigurationSettings;
 
-        public AzureSearchDemoController(ILogger logger, IAzureSearchService azureSearchService)
+        public AzureSearchDemoController(ILogger logger, IAzureSearchService azureSearchService, ICustomConfigurationSettings customConfigurationSettings)
         {
             _logger = logger;
-            this._azureSearchService = azureSearchService;
+            _azureSearchService = azureSearchService;
+            _CustomConfigurationSettings = customConfigurationSettings;
         }
 
         // GET: api/<AzureSearchDemoController>
@@ -29,7 +32,7 @@ namespace AzureSearchDemo.Controllers
         public IEnumerable<string> Get()
         {
             _logger.Information("Inside Controller Get method - Logging Information");
-            //_azureSearchService.InitializeAndCreateIndex();
+           
             return new string[] { "value1", "value2" };
         }
 
@@ -37,7 +40,10 @@ namespace AzureSearchDemo.Controllers
         [HttpGet("{id}")]
         public string Get(int id)
         {
-            return "value";
+            //return "";
+            _logger.Information("Inside Controller GetID method");
+            _azureSearchService.InitializeAndCreateIndex();
+            return _CustomConfigurationSettings.Testazurekey.Testquerykey;
         }
 
         // POST api/<AzureSearchDemoController>
