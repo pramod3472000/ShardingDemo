@@ -64,11 +64,13 @@ namespace AzureSearchDemo.Services
 
             var orderResults = SearchAndOrder(queryClient);
 
-            var boostResults = BoostLastName(serviceClient, queryClient);
-
-            var suggestorResults = GetSuggestorResults(serviceClient, queryClient);
-
             var facetResults = GetFacetResults(serviceClient, queryClient);
+
+            var boostResults = BoostLastName(serviceClient);
+
+            var suggestorResults = GetSuggestorResults(serviceClient);
+
+            
         }
 
 
@@ -83,32 +85,13 @@ namespace AzureSearchDemo.Services
                 Fields = FieldBuilder.BuildForType<Account>()
             };
 
-
             #region Add Suggestors
             var suggestor = new Suggester(autoCompleteSuggestor);
             suggestor.SourceFields.Add("firstName");
             suggestor.SourceFields.Add("lastName");
 
             accountIndexDefinition.Suggesters = new List<Suggester>();
-            accountIndexDefinition.Suggesters.Add(suggestor); 
-            #endregion
-
-
-            #region Add Text Weights
-            var textWeights = new TextWeights();
-
-            textWeights.Weights = new Dictionary<string, double>();
-            textWeights.Weights.Add("firstName", 2);
-            textWeights.Weights.Add("lastName", 5);
-
-            accountIndexDefinition.ScoringProfiles = new List<ScoringProfile>
-            {
-                new ScoringProfile
-                {
-                    Name = "boostLastName",
-                    TextWeights = textWeights
-                }
-            }; 
+            accountIndexDefinition.Suggesters.Add(suggestor);
             #endregion
 
             serviceClient.Indexes.CreateOrUpdate(accountIndexDefinition);
@@ -245,7 +228,7 @@ namespace AzureSearchDemo.Services
             return result;
         }
 
-        private DocumentSearchResult<Account> BoostLastName(SearchServiceClient serviceClient, SearchIndexClient queryClient)
+        private DocumentSearchResult<Account> BoostLastName(SearchServiceClient serviceClient)
         {
             //var textWeights = new TextWeights();
 
@@ -274,16 +257,33 @@ namespace AzureSearchDemo.Services
 
             try
             {
+                var index = serviceClient.Indexes.Get(indexName);
+                #region Add Text Weights
+                var textWeights = new TextWeights();
+
+                textWeights.Weights = new Dictionary<string, double>();
+                textWeights.Weights.Add("firstName", 2);
+                textWeights.Weights.Add("lastName", 5);
+
+                index.ScoringProfiles = new List<ScoringProfile>
+                {
+                    new ScoringProfile
+                    {
+                        Name = "boostLastName",
+                        TextWeights = textWeights
+                    }
+                };
+                serviceClient.Indexes.CreateOrUpdate(index);
+                #endregion
+                //Since we are updating the main index in the upper code, we need to get the searchIndexClient here again
+                SearchIndexClient searchIndexClient = new SearchIndexClient(searchServiceName, indexName, new SearchCredentials(queryKey));
                 SearchParameters parameters = new SearchParameters
                 {
-                    Select = new[] { "firstName", "lastName" }
+                    Select = new[] { "firstName", "lastName" },
+                    ScoringProfile = "boostLastName"
                 };
 
-                parameters.ScoringProfile = "boostLastName";
-                //SearchIndexClient queryClient = new SearchIndexClient(
-                //    searchServiceName, indexName, new SearchCredentials(queryKey));
-
-                var result = queryClient.Documents.Search<Account>("Hughes", parameters);
+                var result = searchIndexClient.Documents.Search<Account>("Hughes", parameters);
                 _logger.Information("BoostLastName {@result}", result);
                 return result;
             }
@@ -294,20 +294,33 @@ namespace AzureSearchDemo.Services
             }
         }
 
-        private DocumentSuggestResult<Document> GetSuggestorResults(SearchServiceClient serviceClient, SearchIndexClient queryClient)
+        private DocumentSuggestResult<Document> GetSuggestorResults(SearchServiceClient serviceClient)
         {
             try
             {
+                //var index = serviceClient.Indexes.Get(indexName);
+                //#region Add Suggestors
+                //var suggestor = new Suggester(autoCompleteSuggestor);
+                //suggestor.SourceFields.Add("firstName");
+                //suggestor.SourceFields.Add("lastName");
+
+                //index.Suggesters = new List<Suggester>();
+                //index.Suggesters.Add(suggestor);
+                //#endregion
+
+                //serviceClient.Indexes.CreateOrUpdate(index);
+
                 SuggestParameters suggestParameters = new SuggestParameters
                 {
+                    Select = new[] { "firstName", "lastName" },
                     UseFuzzyMatching = true,
                     Top = 20
                 };
 
-                //SearchIndexClient queryClient = new SearchIndexClient(
-                //searchServiceName, indexName, new SearchCredentials(queryKey));
+                //Since we are updating the main index in the upper code, we need to get the searchIndexClient here again
+                SearchIndexClient searchIndexClient = new SearchIndexClient(searchServiceName, indexName, new SearchCredentials(queryKey));
 
-                var result = queryClient.Documents.Suggest("Hug", "autoComplete", suggestParameters);
+                var result = searchIndexClient.Documents.Suggest("Hug", autoCompleteSuggestor, suggestParameters);
                 _logger.Information("GetSuggestorResults {@result}", result);
                 return result;
             }
@@ -323,24 +336,6 @@ namespace AzureSearchDemo.Services
         {
             try
             {
-                //var accountIndexDefinition = new Index
-                //{
-                //    Name = "accounts",
-                //    Fields = FieldBuilder.BuildForType<Account>()
-                //};
-
-                //var suggestor = new Suggester("facets");
-                //suggestor.SourceFields.Add("firstName");
-                //suggestor.SourceFields.Add("lastName");
-
-                //accountIndexDefinition.Suggesters = new List<Suggester>();
-                //accountIndexDefinition.Suggesters.Add(suggestor);
-
-                //serviceClient.Indexes.CreateOrUpdate(accountIndexDefinition);
-
-                //DocumentSearchResult<Account> results;
-
-
                 SearchParameters searchParameters = new SearchParameters
                 {
                     Facets = new List<string> { "balance", "age" }
